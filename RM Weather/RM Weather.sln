@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RM Weather", "RM Weather.csproj", "{3B94B9BB-F716-487C-8724-9B1416BC7D55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B94B9BB-F716-487C-8724-9B1416BC7D55}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {556B3FA0-DB1A-4586-9F7F-E44F1447EA36}
+	EndGlobalSection
+EndGlobal

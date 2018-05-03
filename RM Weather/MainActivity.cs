@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -29,9 +30,6 @@ namespace RM_Weather
                 Intent openActivity = new Intent(this, typeof(FindCityActivity));
                 StartActivityForResult(openActivity, 0);
             };
-
-           
-
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -44,17 +42,24 @@ namespace RM_Weather
             }
         }
 
-        private void LoadData(MyNamespace.List Object)
+        private async void LoadData(MyNamespace.List Object)
         {
             if (Object != null)
             {
+                PreciseNamespace.RootObject PreciseData = await GetPreciseResponse.CitySearchSerivce(Object.id);
                 Toast.MakeText(this, "Data Retrieved Succesfully", ToastLength.Long).Show();
                 FindViewById<TextView>(Resource.Id.locationText).Text = Object.name;
-                FindViewById<TextView>(Resource.Id.tempText).Text = Object.main.temp.ToString();
-                FindViewById<TextView>(Resource.Id.windText).Text = Object.wind.speed.ToString();
-                FindViewById<TextView>(Resource.Id.visibilityText).Text = Object.weather[0].main;
-                FindViewById<TextView>(Resource.Id.humidityText).Text = Object.main.humidity.ToString();
+                FindViewById<TextView>(Resource.Id.tempText).Text = Object.main.temp.ToString() + "°C";
+                FindViewById<TextView>(Resource.Id.windText).Text = Object.wind.speed.ToString() + " km/h";
+                FindViewById<TextView>(Resource.Id.humidityText).Text = Object.main.humidity.ToString() + "%";
+                FindViewById<TextView>(Resource.Id.visibilityText).Text = Object.weather[0].main ;
+
+                DateTime time = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
+                DateTime sunrise = time.AddSeconds((double)PreciseData.sys.sunrise);
+                DateTime sunset = time.AddSeconds((double)PreciseData.sys.sunset);
                 
+                FindViewById<TextView>(Resource.Id.sunriseText).Text = sunrise.ToString() + " UTC";
+                FindViewById<TextView>(Resource.Id.sunsetText).Text = sunset.ToString() + " UTC";
 
             }
             else

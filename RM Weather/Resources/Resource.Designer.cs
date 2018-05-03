@@ -60,14 +60,14 @@ namespace RM_Weather
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f05000d
-			public const int CityCountFound = 2131034125;
+			// aapt resource value: 0x7f050011
+			public const int CityCountFound = 2131034129;
 			
-			// aapt resource value: 0x7f05000c
-			public const int CityEntry = 2131034124;
+			// aapt resource value: 0x7f050010
+			public const int CityEntry = 2131034128;
 			
-			// aapt resource value: 0x7f05000e
-			public const int CityList = 2131034126;
+			// aapt resource value: 0x7f050012
+			public const int CityList = 2131034130;
 			
 			// aapt resource value: 0x7f050001
 			public const int RelativeLayout01 = 2131034113;
@@ -86,6 +86,18 @@ namespace RM_Weather
 			
 			// aapt resource value: 0x7f050003
 			public const int locationText = 2131034115;
+			
+			// aapt resource value: 0x7f05000c
+			public const int sunriseLabel = 2131034124;
+			
+			// aapt resource value: 0x7f05000d
+			public const int sunriseText = 2131034125;
+			
+			// aapt resource value: 0x7f05000e
+			public const int sunsetLabel = 2131034126;
+			
+			// aapt resource value: 0x7f05000f
+			public const int sunsetText = 2131034127;
 			
 			// aapt resource value: 0x7f050004
 			public const int tempLabel = 2131034116;

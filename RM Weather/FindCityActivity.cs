@@ -37,8 +37,8 @@ namespace RM_Weather
             {
 
                 string selectedFromList = list.GetItemAtPosition(e.Position).ToString();
-                string tempSubstring = selectedFromList.Substring(0,1);
-                int index = Int32.Parse(tempSubstring)-1;
+                string tempSubstring = selectedFromList.Substring(0, 1);
+                int index = Int32.Parse(tempSubstring) - 1;
                 Intent myIntent = new Intent(this, typeof(MainActivity));
                 myIntent.PutExtra("object", JsonConvert.SerializeObject(ObjectsFound[index]));
                 SetResult(Result.Ok, myIntent);
@@ -68,6 +68,7 @@ namespace RM_Weather
 
             MyNamespace.RootObject dane;
             List<string> table = new List<string>();
+
             using (var httpClient = new HttpClient())
             {
                 FoundCount.Text = "Pending...";
@@ -82,7 +83,7 @@ namespace RM_Weather
             int index = 1;
             foreach (var dana in dane.list)
             {
-                table.Add(index + ". " + "Country: " + dana.sys.country + " Name: "+ dana.name + "\nLat/Lon: " + dana.coord.lat + " " + dana.coord.lon + "\nTemp: " + dana.main.temp + " C");
+                table.Add(index + ". " + "Country: " + dana.sys.country + " Name: " + dana.name + "\nLat/Lon: " + dana.coord.lat + " " + dana.coord.lon + "\nTemp: " + dana.main.temp + " C");
                 ++index;
             }
             var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleExpandableListItem1, table);

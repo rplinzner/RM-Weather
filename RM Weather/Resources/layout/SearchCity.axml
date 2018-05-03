@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:inputType="text"
+        android:id="@+id/CityEntry"
+        android:textColor="@android:color/white"
+      android:imeOptions="actionSearch"/>
+  <TextView
+    android:text=" "
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/CityCountFound"
+    android:textColor="@android:color/white" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/CityList"
+        android:scrollingCache="true"
+        android:fastScrollAlwaysVisible="false"
+        android:fastScrollEnabled="true"
+        android:fadeScrollbars="true"
+        android:scrollbarStyle="insideOverlay" />
+</LinearLayout>

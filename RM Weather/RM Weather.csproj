@@ -71,6 +71,7 @@
     <Compile Include="Weather.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons-regular-webfont.ttf" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />

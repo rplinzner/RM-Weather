@@ -60,14 +60,14 @@ namespace RM_Weather
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050011
-			public const int CityCountFound = 2131034129;
-			
-			// aapt resource value: 0x7f050010
-			public const int CityEntry = 2131034128;
-			
 			// aapt resource value: 0x7f050012
-			public const int CityList = 2131034130;
+			public const int CityCountFound = 2131034130;
+			
+			// aapt resource value: 0x7f050011
+			public const int CityEntry = 2131034129;
+			
+			// aapt resource value: 0x7f050013
+			public const int CityList = 2131034131;
 			
 			// aapt resource value: 0x7f050001
 			public const int RelativeLayout01 = 2131034113;
@@ -75,47 +75,50 @@ namespace RM_Weather
 			// aapt resource value: 0x7f050000
 			public const int SearchCityButton = 2131034112;
 			
+			// aapt resource value: 0x7f05000a
+			public const int humidityText = 2131034122;
+			
 			// aapt resource value: 0x7f050009
-			public const int humidityText = 2131034121;
-			
-			// aapt resource value: 0x7f050008
-			public const int humidtyLabel = 2131034120;
-			
-			// aapt resource value: 0x7f050002
-			public const int locationLabel = 2131034114;
+			public const int humidtyLabel = 2131034121;
 			
 			// aapt resource value: 0x7f050003
-			public const int locationText = 2131034115;
-			
-			// aapt resource value: 0x7f05000c
-			public const int sunriseLabel = 2131034124;
-			
-			// aapt resource value: 0x7f05000d
-			public const int sunriseText = 2131034125;
-			
-			// aapt resource value: 0x7f05000e
-			public const int sunsetLabel = 2131034126;
-			
-			// aapt resource value: 0x7f05000f
-			public const int sunsetText = 2131034127;
+			public const int locationLabel = 2131034115;
 			
 			// aapt resource value: 0x7f050004
-			public const int tempLabel = 2131034116;
+			public const int locationText = 2131034116;
+			
+			// aapt resource value: 0x7f05000d
+			public const int sunriseLabel = 2131034125;
+			
+			// aapt resource value: 0x7f05000e
+			public const int sunriseText = 2131034126;
+			
+			// aapt resource value: 0x7f05000f
+			public const int sunsetLabel = 2131034127;
+			
+			// aapt resource value: 0x7f050010
+			public const int sunsetText = 2131034128;
 			
 			// aapt resource value: 0x7f050005
-			public const int tempText = 2131034117;
-			
-			// aapt resource value: 0x7f05000a
-			public const int visibilityLabel = 2131034122;
-			
-			// aapt resource value: 0x7f05000b
-			public const int visibilityText = 2131034123;
+			public const int tempLabel = 2131034117;
 			
 			// aapt resource value: 0x7f050006
-			public const int windLabel = 2131034118;
+			public const int tempText = 2131034118;
+			
+			// aapt resource value: 0x7f05000b
+			public const int visibilityLabel = 2131034123;
+			
+			// aapt resource value: 0x7f05000c
+			public const int visibilityText = 2131034124;
+			
+			// aapt resource value: 0x7f050002
+			public const int weather_icon = 2131034114;
 			
 			// aapt resource value: 0x7f050007
-			public const int windText = 2131034119;
+			public const int windLabel = 2131034119;
+			
+			// aapt resource value: 0x7f050008
+			public const int windText = 2131034120;
 			
 			static Id()
 			{
@@ -151,6 +154,30 @@ namespace RM_Weather
 			
 			// aapt resource value: 0x7f040000
 			public const int app_name = 2130968576;
+			
+			// aapt resource value: 0x7f040002
+			public const int weather_clear_night = 2130968578;
+			
+			// aapt resource value: 0x7f040004
+			public const int weather_cloudy = 2130968580;
+			
+			// aapt resource value: 0x7f040008
+			public const int weather_drizzle = 2130968584;
+			
+			// aapt resource value: 0x7f040003
+			public const int weather_foggy = 2130968579;
+			
+			// aapt resource value: 0x7f040005
+			public const int weather_rainy = 2130968581;
+			
+			// aapt resource value: 0x7f040006
+			public const int weather_snowy = 2130968582;
+			
+			// aapt resource value: 0x7f040001
+			public const int weather_sunny = 2130968577;
+			
+			// aapt resource value: 0x7f040007
+			public const int weather_thunder = 2130968583;
 			
 			static String()
 			{

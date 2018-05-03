@@ -11,13 +11,14 @@
         android:inputType="text"
         android:id="@+id/CityEntry"
         android:textColor="@android:color/white"
-      android:imeOptions="actionSearch"/>
-  <TextView
-    android:text=" "
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/CityCountFound"
-    android:textColor="@android:color/white" />
+        android:hint="Format: [City] or [City], [Country Code]"
+        android:imeOptions="actionSearch" />
+    <TextView
+        android:text=" "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/CityCountFound"
+        android:textColor="@android:color/white" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

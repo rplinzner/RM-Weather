@@ -64,7 +64,7 @@ namespace RM_Weather
             string key = "e33cd5a033ded6b870ec49734dcde1da";
             Cityquery.Replace(" ", "%20");
             string queryString = "http://api.openweathermap.org/data/2.5/find?mode=json&type=like&q="
-                                 + Cityquery + "&units=metric" + "&appid=" + key;
+                                 + Cityquery + "&cnt=10" + "&units=metric" + "&appid=" + key;
 
             MyNamespace.RootObject dane;
             List<string> table = new List<string>();

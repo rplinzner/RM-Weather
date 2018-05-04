@@ -1,36 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
+using Android;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Graphics;
 using Android.OS;
+using Android.Support.V4.App;
 using Android.Widget;
 using Newtonsoft.Json;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
 
+//Weather APP by Rafal Plinzner And Michal Bialecki
 namespace RM_Weather
 {
     [Activity(Label = "RM Weather by Rafal and Michal",
-        Theme = "@android:style/Theme.Material.Light",
         MainLauncher = true)]
-    public class MainActivity : Activity
+    public class MainActivity : Activity, ActivityCompat.IOnRequestPermissionsResultCallback
     {
-        private MyNamespace.List ObjectToShow;
+        readonly string[] _permissionsLocation =
+        {
+            Manifest.Permission.AccessCoarseLocation,
+            Manifest.Permission.AccessFineLocation
+        };
+
+        const int RequestLocationId = 0;
+
+        private Position _location;
+        private MyNamespace.List _objectToShow;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-           
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
             Button cityButton = FindViewById<Button>(Resource.Id.SearchCityButton);
-           
+            Button locationButton = FindViewById<Button>(Resource.Id.SearchLocationButton);
 
             cityButton.Click += delegate
             {
                 Intent openActivity = new Intent(this, typeof(FindCityActivity));
                 StartActivityForResult(openActivity, 0);
+            };
+
+            locationButton.Click += async delegate
+            {
+                await TryGetLocationAsync();
+                var obj = await GetLatLonResponse.LatLonResponseTask(_location);
+                LoadData(null, obj);
             };
         }
 
@@ -39,45 +60,46 @@ namespace RM_Weather
             base.OnActivityResult(requestCode, resultCode, data);
             if (resultCode == Result.Ok)
             {
-                ObjectToShow = JsonConvert.DeserializeObject<MyNamespace.List>(data.GetStringExtra("object"));
-                LoadData(ObjectToShow);
+                _objectToShow = JsonConvert.DeserializeObject<MyNamespace.List>(data.GetStringExtra("object"));
+                LoadData(_objectToShow, null);
             }
         }
 
-        private async void LoadData(MyNamespace.List Object)
+        private async void LoadData(MyNamespace.List Object, PreciseNamespace.RootObject preciseObj)
         {
-            if (Object != null)
+            if (preciseObj == null)
             {
-                PreciseNamespace.RootObject PreciseData = await GetPreciseResponse.CitySearchSerivce(Object.id);
-                Toast.MakeText(this, "Data Retrieved Succesfully", ToastLength.Long).Show();
-                SetWeatherIcion(PreciseData.weather[0].id, PreciseData.sys.sunrise, PreciseData.sys.sunset);
-                FindViewById<TextView>(Resource.Id.locationText).Text = Object.name;
-                FindViewById<TextView>(Resource.Id.tempText).Text = Object.main.temp.ToString() + "°C";
-                FindViewById<TextView>(Resource.Id.windText).Text = Object.wind.speed.ToString() + " km/h";
-                FindViewById<TextView>(Resource.Id.humidityText).Text = Object.main.humidity.ToString() + "%";
-                FindViewById<TextView>(Resource.Id.visibilityText).Text = Object.weather[0].main ;
-
-                DateTime time = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
-                DateTime sunrise = time.AddSeconds((double)PreciseData.sys.sunrise);
-                DateTime sunset = time.AddSeconds((double)PreciseData.sys.sunset);
-                
-                FindViewById<TextView>(Resource.Id.sunriseText).Text = sunrise.ToString() + " UTC";
-                FindViewById<TextView>(Resource.Id.sunsetText).Text = sunset.ToString() + " UTC";
-
+                if (Object == null) return;
+                preciseObj = await GetPreciseResponse.CitySearchSerivce(Object.id);
             }
-            else
+            if (preciseObj != null)
             {
-                Toast.MakeText(this, "Data not retrieved :(", ToastLength.Long).Show();
+                DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                DateTime sunrise = time.AddSeconds(preciseObj.sys.sunrise);
+                DateTime sunset = time.AddSeconds(preciseObj.sys.sunset);
+
+                SetWeatherIcion(preciseObj.weather[0].id, sunrise, sunset);
+                FindViewById<TextView>(Resource.Id.locationText).Text = preciseObj.name + ", " + preciseObj.sys.country;
+                FindViewById<TextView>(Resource.Id.tempText).Text = preciseObj.main.temp.ToString(CultureInfo.InvariantCulture) + "°C";
+                FindViewById<TextView>(Resource.Id.windText).Text = preciseObj.wind.speed.ToString(CultureInfo.InvariantCulture) + " km/h";
+                FindViewById<TextView>(Resource.Id.humidityText).Text = preciseObj.main.humidity.ToString(CultureInfo.InvariantCulture) + "%";
+                FindViewById<TextView>(Resource.Id.visibilityText).Text = preciseObj.weather[0].main;
+
+                FindViewById<TextView>(Resource.Id.sunriseText).Text = sunrise.ToString(CultureInfo.InvariantCulture) + " UTC";
+                FindViewById<TextView>(Resource.Id.sunsetText).Text = sunset.ToString(CultureInfo.InvariantCulture) + " UTC";
+
+                FindViewById<TextView>(Resource.Id.LatLonText).Text =
+                    preciseObj.coord.lat.ToString(CultureInfo.InvariantCulture) + " " + preciseObj.coord.lon.ToString(CultureInfo.InvariantCulture);
             }
         }
 
-        private void SetWeatherIcion(int actualId, long sunrise, long sunset)
+        private void SetWeatherIcion(int actualId, DateTime sunrise, DateTime sunset)
         {
             int id = actualId / 100;
             String icon = "";
             if (actualId == 800)
             {
-                long currentTime = DateTime.UtcNow.Second;
+                DateTime currentTime = DateTime.UtcNow;
                 if (currentTime >= sunrise && currentTime < sunset)
                 {
                     icon = Resources.GetString(Resource.String.weather_sunny);
@@ -116,8 +138,84 @@ namespace RM_Weather
             weatherIcon.Typeface = font;
             weatherIcon.Text = icon;
         }
-    }
 
-        
-    
+        async Task TryGetLocationAsync()
+        {
+            if ((int)Build.VERSION.SdkInt < 23)
+            {
+                await GetLocationAsync();
+                return;
+            }
+            await GetLocationPermissionAsync();
+        }
+
+        async Task GetLocationPermissionAsync()
+        {
+            //Check to see if any permission in our group is available, if one, then all are
+            const string permission = Manifest.Permission.AccessFineLocation;
+            if (CheckSelfPermission(permission) == (int)Permission.Granted)
+            {
+                await GetLocationAsync();
+                return;
+            }
+            //need to request permission
+            if (ShouldShowRequestPermissionRationale(permission))
+            {
+                //Explain to the user why we need to read the contacts
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this, Resource.Style.AppCompatAlertDialogStyle);
+                AlertDialog alert = dialog.Create();
+                alert.SetTitle("Warning");
+                alert.SetMessage("Location access is required to show weather. Grant permissions and search one more time");
+                alert.SetButton("OK", (c, ev) =>
+                {
+                    RequestPermissions(_permissionsLocation, RequestLocationId);
+                });
+
+                alert.Show();
+                return;
+            }
+            //Finally request permissions with the list of permissions and Id
+            RequestPermissions(_permissionsLocation, RequestLocationId);
+        }
+
+        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        {
+            switch (requestCode)
+            {
+                case RequestLocationId:
+                    {
+                        if (grantResults[0] == Permission.Granted)
+                        {
+                            //Permission granted
+                            Toast.MakeText(this, "Location permission is available, getting lat/long.", ToastLength.Short).Show();
+                            await GetLocationAsync();
+                        }
+                        else
+                        {
+                            //Permission Denied :(
+                            //Disabling location functionality
+                            Toast.MakeText(this, "Location permission is denied.", ToastLength.Short).Show();
+                        }
+                    }
+                    break;
+            }
+        }
+        async Task GetLocationAsync()
+        {
+            Toast.MakeText(this, "Getting Location", ToastLength.Short).Show();
+            try
+            {
+                var locator = CrossGeolocator.Current;
+                locator.DesiredAccuracy = 100;
+                TimeSpan ts = new TimeSpan(20000);
+                var position = await locator.GetPositionAsync(ts);
+                Toast.MakeText(this, $"Lat: {position.Latitude}  Long: {position.Longitude}", ToastLength.Short).Show();
+                _location = position;
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, "Unable to get location: " + ex, ToastLength.Short).Show();
+            }
+        }
+    }
 }

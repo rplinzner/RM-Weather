@@ -14,8 +14,6 @@ namespace RM_Weather
 {
     namespace PreciseNamespace
     {
-
-
         public class Coord
         {
             public double lon { get; set; }

@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using Newtonsoft.Json;
 
 namespace RM_Weather
 {
-    [Activity(Label = "Search for City")]
+    [Activity(Label = "Search by City")]
     public class FindCityActivity : Activity
     {
 
-        private TextView FoundCount;
-        private string Cityquery;
-        private ListView list;
-        private List<MyNamespace.List> ObjectsFound;
+        private TextView _foundCount;
+        private string _cityquery;
+        private ListView _list;
+        private List<MyNamespace.List> _objectsFound;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -30,22 +25,19 @@ namespace RM_Weather
             SetContentView(Resource.Layout.SearchCity);
             EditText cityEditText = FindViewById<EditText>(Resource.Id.CityEntry);
             cityEditText.EditorAction += EditorActionHandler;
-            FoundCount = FindViewById<TextView>(Resource.Id.CityCountFound);
-            list = FindViewById<ListView>(Resource.Id.CityList);
+            _foundCount = FindViewById<TextView>(Resource.Id.CityCountFound);
+            _list = FindViewById<ListView>(Resource.Id.CityList);
 
-            list.ItemClick += (object sender, AdapterView.ItemClickEventArgs e) =>
+            _list.ItemClick += (sender, e) =>
             {
-
-                string selectedFromList = list.GetItemAtPosition(e.Position).ToString();
+                string selectedFromList = _list.GetItemAtPosition(e.Position).ToString();
                 string tempSubstring = selectedFromList.Substring(0, 1);
                 int index = Int32.Parse(tempSubstring) - 1;
                 Intent myIntent = new Intent(this, typeof(MainActivity));
-                myIntent.PutExtra("object", JsonConvert.SerializeObject(ObjectsFound[index]));
+                myIntent.PutExtra("object", JsonConvert.SerializeObject(_objectsFound[index]));  //sent data to previous activity
                 SetResult(Result.Ok, myIntent);
                 Finish();
-
             };
-
         }
 
         private void EditorActionHandler(object sender, TextView.EditorActionEventArgs e)
@@ -53,7 +45,7 @@ namespace RM_Weather
             e.Handled = false;
             if (e.ActionId == ImeAction.Search)
             {
-                Cityquery = FindViewById<EditText>(Resource.Id.CityEntry).Text;
+                _cityquery = FindViewById<EditText>(Resource.Id.CityEntry).Text;
                 CitySearchSerivce();
                 e.Handled = true;
             }
@@ -62,24 +54,22 @@ namespace RM_Weather
         private async void CitySearchSerivce()
         {
             string key = "e33cd5a033ded6b870ec49734dcde1da";
-            Cityquery.Replace(" ", "%20");
+            _cityquery.Replace(" ", "%20");
             string queryString = "http://api.openweathermap.org/data/2.5/find?mode=json&type=like&q="
-                                 + Cityquery + "&cnt=10" + "&units=metric" + "&appid=" + key;
+                                 + _cityquery + "&cnt=10" + "&units=metric" + "&appid=" + key;
 
             MyNamespace.RootObject dane;
             List<string> table = new List<string>();
 
             using (var httpClient = new HttpClient())
             {
-                FoundCount.Text = "Pending...";
-
+                _foundCount.Text = "Pending...";
                 var json = await httpClient.GetStringAsync(queryString);
                 dane = JsonConvert.DeserializeObject<MyNamespace.RootObject>(json);
-
             }
 
-            ObjectsFound = dane.list;
-            FoundCount.Text = "Found: " + dane.count + " results";
+            _objectsFound = dane.list;
+            _foundCount.Text = "Found: " + dane.count + " results";
             int index = 1;
             foreach (var dana in dane.list)
             {
@@ -87,12 +77,7 @@ namespace RM_Weather
                 ++index;
             }
             var adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleExpandableListItem1, table);
-            list.Adapter = adapter;
-
+            _list.Adapter = adapter;
         }
-
-
-
-
     }
 }

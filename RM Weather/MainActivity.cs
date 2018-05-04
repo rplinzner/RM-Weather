@@ -9,7 +9,6 @@ using Android.Graphics;
 using Android.OS;
 using Android.Support.V4.App;
 using Android.Widget;
-using Newtonsoft.Json;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
@@ -29,7 +28,7 @@ namespace RM_Weather
         const int RequestLocationId = 0;
 
         private Position _location;
-        private MyNamespace.List _objectToShow;
+        //private int _objectToShow;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -51,7 +50,7 @@ namespace RM_Weather
             {
                 await TryGetLocationAsync();
                 var obj = await GetLatLonResponse.LatLonResponseTask(_location);
-                LoadData(null, obj);
+                LoadData(obj);
             };
         }
 
@@ -60,37 +59,37 @@ namespace RM_Weather
             base.OnActivityResult(requestCode, resultCode, data);
             if (resultCode == Result.Ok)
             {
-                _objectToShow = JsonConvert.DeserializeObject<MyNamespace.List>(data.GetStringExtra("object"));
-                LoadData(_objectToShow, null);
+                LoadData(data.GetIntExtra("object", 0));
             }
         }
 
-        private async void LoadData(MyNamespace.List Object, PreciseNamespace.RootObject preciseObj)
+        private async void LoadData(int id)
         {
-            if (preciseObj == null)
-            {
-                if (Object == null) return;
-                preciseObj = await GetPreciseResponse.CitySearchSerivce(Object.id);
-            }
-            if (preciseObj != null)
-            {
-                DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-                DateTime sunrise = time.AddSeconds(preciseObj.sys.sunrise);
-                DateTime sunset = time.AddSeconds(preciseObj.sys.sunset);
+            if (id == 0) return;
+            var preciseObj = await GetPreciseResponse.CitySearchSerivce(id);
 
-                SetWeatherIcion(preciseObj.weather[0].id, sunrise, sunset);
-                FindViewById<TextView>(Resource.Id.locationText).Text = preciseObj.name + ", " + preciseObj.sys.country;
-                FindViewById<TextView>(Resource.Id.tempText).Text = preciseObj.main.temp.ToString(CultureInfo.InvariantCulture) + "°C";
-                FindViewById<TextView>(Resource.Id.windText).Text = preciseObj.wind.speed.ToString(CultureInfo.InvariantCulture) + " km/h";
-                FindViewById<TextView>(Resource.Id.humidityText).Text = preciseObj.main.humidity.ToString(CultureInfo.InvariantCulture) + "%";
-                FindViewById<TextView>(Resource.Id.visibilityText).Text = preciseObj.weather[0].main;
+            DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            DateTime sunrise = time.AddSeconds(preciseObj.sys.sunrise);
+            DateTime sunset = time.AddSeconds(preciseObj.sys.sunset);
 
-                FindViewById<TextView>(Resource.Id.sunriseText).Text = sunrise.ToString(CultureInfo.InvariantCulture) + " UTC";
-                FindViewById<TextView>(Resource.Id.sunsetText).Text = sunset.ToString(CultureInfo.InvariantCulture) + " UTC";
+            SetWeatherIcion(preciseObj.weather[0].id, sunrise, sunset);
+            FindViewById<TextView>(Resource.Id.locationText).Text = preciseObj.name + ", " + preciseObj.sys.country;
+            FindViewById<TextView>(Resource.Id.tempText).Text =
+                preciseObj.main.temp.ToString(CultureInfo.InvariantCulture) + "°C";
+            FindViewById<TextView>(Resource.Id.windText).Text =
+                preciseObj.wind.speed.ToString(CultureInfo.InvariantCulture) + " km/h";
+            FindViewById<TextView>(Resource.Id.humidityText).Text =
+                preciseObj.main.humidity.ToString(CultureInfo.InvariantCulture) + "%";
+            FindViewById<TextView>(Resource.Id.visibilityText).Text = preciseObj.weather[0].main;
 
-                FindViewById<TextView>(Resource.Id.LatLonText).Text =
-                    preciseObj.coord.lat.ToString(CultureInfo.InvariantCulture) + " " + preciseObj.coord.lon.ToString(CultureInfo.InvariantCulture);
-            }
+            FindViewById<TextView>(Resource.Id.sunriseText).Text =
+                sunrise.ToString(CultureInfo.InvariantCulture) + " UTC";
+            FindViewById<TextView>(Resource.Id.sunsetText).Text =
+                sunset.ToString(CultureInfo.InvariantCulture) + " UTC";
+
+            FindViewById<TextView>(Resource.Id.LatLonText).Text =
+                preciseObj.coord.lat.ToString(CultureInfo.InvariantCulture) + " " +
+                preciseObj.coord.lon.ToString(CultureInfo.InvariantCulture);
         }
 
         private void SetWeatherIcion(int actualId, DateTime sunrise, DateTime sunset)

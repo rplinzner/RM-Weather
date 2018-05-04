@@ -8,7 +8,7 @@ namespace RM_Weather
     class GetLatLonResponse
     {
         
-        public static async Task<PreciseNamespace.RootObject> LatLonResponseTask(Position position)
+        public static async Task<int> LatLonResponseTask(Position position)
         {
             if (position != null)
             {
@@ -23,9 +23,9 @@ namespace RM_Weather
                     var json = await httpClient.GetStringAsync(queryString);
                     dane = JsonConvert.DeserializeObject<PreciseNamespace.RootObject>(json);
                 }
-                return dane;
+                return dane.id;
             }
-            return null;
+            return 0;
         }
     }
 }

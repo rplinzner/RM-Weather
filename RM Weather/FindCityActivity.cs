@@ -34,7 +34,7 @@ namespace RM_Weather
                 string tempSubstring = selectedFromList.Substring(0, 1);
                 int index = Int32.Parse(tempSubstring) - 1;
                 Intent myIntent = new Intent(this, typeof(MainActivity));
-                myIntent.PutExtra("object", JsonConvert.SerializeObject(_objectsFound[index]));  //sent data to previous activity
+                myIntent.PutExtra("object", _objectsFound[index].id);  //sent data to previous activity
                 SetResult(Result.Ok, myIntent);
                 Finish();
             };

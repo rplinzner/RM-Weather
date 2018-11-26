@@ -53,7 +53,7 @@ namespace RM_Weather
 
         private async void CitySearchSerivce()
         {
-            string key = "e33cd5a033ded6b870ec49734dcde1da";
+            string key = "API_KEY_HERE";
             _cityquery.Replace(" ", "%20");
             string queryString = "http://api.openweathermap.org/data/2.5/find?mode=json&type=like&q="
                                  + _cityquery + "&cnt=10" + "&units=metric" + "&appid=" + key;

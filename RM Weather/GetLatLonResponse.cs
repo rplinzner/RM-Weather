@@ -12,7 +12,7 @@ namespace RM_Weather
         {
             if (position != null)
             {
-                string key = "e33cd5a033ded6b870ec49734dcde1da";
+                string key = "API_KEY_HERE";
                 string queryString = "http://api.openweathermap.org/data/2.5/weather?lat="
                                      + position.Latitude + "&lon=" + position.Longitude + "&units=metric" +
                                      "&appid=" + key;
